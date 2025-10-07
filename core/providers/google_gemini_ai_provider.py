@@ -9,6 +9,15 @@ import google.generativeai as genai
 
 from core.providers.base_ai_provider import BaseAIProvider
 
+DEFAULT_PROMPT = """You are a specialist in application security, known for your ability to 
+analyze complex codebases and uncover hidden vulnerabilities. You will be 
+presented with the full code of an application. Your mission is to conduct 
+a thorough security review, identifying potential weaknesses and offering 
+actionable recommendations for improvement. Prioritize the most significant 
+security risks that could compromise the integrity of the application."""
+
+PROMPT = os.getenv('GEMINI_PROMPT', DEFAULT_PROMP).rstrip() \
+    + "\nHere is the code:\n"
 
 class GoogleGeminiAIProvider(BaseAIProvider):
     """Client for interacting with the Google Generative AI API."""
@@ -24,16 +33,7 @@ class GoogleGeminiAIProvider(BaseAIProvider):
 
     def scan_code(self, code_summary):
         try:
-            response = self.model.generate_content(
-                """You are a specialist in application security, known for your ability to 
-                analyze complex codebases and uncover hidden vulnerabilities. You will be 
-                presented with the full code of an application. Your mission is to conduct 
-                a thorough security review, identifying potential weaknesses and offering 
-                actionable recommendations for improvement. Prioritize the most significant 
-                security risks that could compromise the integrity of the application. 
-                Here is the code:"""
-                + code_summary,
-            )
+            response = self.model.generate_content(PROMPT + code_summary)
             return response.text
         except Exception as e:  # pylint: disable=W0718
             return f"Error occurred: {e}"
