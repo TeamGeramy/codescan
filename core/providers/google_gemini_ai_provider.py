@@ -16,7 +16,7 @@ a thorough security review, identifying potential weaknesses and offering
 actionable recommendations for improvement. Prioritize the most significant 
 security risks that could compromise the integrity of the application."""
 
-PROMPT = os.getenv('GEMINI_PROMPT', DEFAULT_PROMP).rstrip() \
+PROMPT = os.getenv('GEMINI_PROMPT', DEFAULT_PROMPT).rstrip() \
     + "\nHere is the code:\n"
 
 class GoogleGeminiAIProvider(BaseAIProvider):
