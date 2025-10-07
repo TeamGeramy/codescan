@@ -23,16 +23,21 @@ def read_files_and_extract_code_summary(file_paths):
     """
     code_summary = ""
     for file_path in file_paths:
-        if os.path.isfile(file_path):
-            try:
-                with open(file_path, "r", encoding="utf-8") as file:
-                    logging.info("Reading: %s", file_path)
-                    code_summary += f"\n\nFile: {os.path.basename(file_path)}\n"
-                    code_summary += file.read()
-            except (UnicodeDecodeError, IOError) as e:
-                logging.warning("Skipping file %s: %s", file_path, e)
-        else:
+        if '.git' in file_path:
+            logging.warning("Skipped %s: in .git directory.", file_path)
+            continue
+        if not os.path.isfile(file_path):
             logging.warning("Skipped %s: Not a valid file.", file_path)
+            continue
+
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                logging.info("Reading: %s", file_path)
+                code_summary += f"\n\nFile: {os.path.basename(file_path)}\n"
+                code_summary += file.read()
+        except (UnicodeDecodeError, IOError) as e:
+            logging.warning("Skipping file %s: %s", file_path, e)
+
     return code_summary
 
 
